@@ -1,0 +1,15 @@
+[Unit]
+Description=Commando bot for Meshtastic
+Documentation={{ commando_repo }}
+
+[Service]
+Type=notify
+ExecStart={{ commando_venv_home }}/bin/python {{ commando_venv_home }}/commando.py
+Restart=always
+RestartSec=30
+User={{ commando_user }}
+Group={{ commando_group }}
+EnvironmentFile=/etc/commando/commando.env
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+- name: Daemon-reload commando
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: blackbox.service
+
+- name: Enable commando
+  ansible.builtin.systemd:
+    enabled: true
+    name: blackbox.service
+
+- name: Restart commando
+  ansible.builtin.systemd:
+    name: blackbox.service
+    state: restarted

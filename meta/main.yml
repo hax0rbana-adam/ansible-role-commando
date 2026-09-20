@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  author: Adam
+  description: Commando - A meshtastic bot that can bridge to Matrix
+  license: MIT
+  company: none
+  min_ansible_version: "2.10"
+  platforms:
+    - name: Debian
+      versions:
+        - trixie
+  galaxy_tags:
+    - meshtastic
+    - matrix
+    - mesh
+    - offgrid
+  namespace: hax0rbana_adam
+  role_name: commando
+
+dependencies: []

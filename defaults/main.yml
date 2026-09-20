@@ -1,0 +1,11 @@
+commando_repo: https://gitlab.hax0rbana.org/public-repos/meshtastic/commando.git
+commando_git_refspec: 4ec8f099d52c9d9d1fd8eea76b853b6a6235a672
+commando_git_commit: 4ec8f099d52c9d9d1fd8eea76b853b6a6235a672
+commando_directory: /usr/local/commando
+commando_venv_home: "{{ commando_directory }}/.venv"
+commando_user: commando
+commando_group: commando
+commando_homeserver: https://matrix.example.org
+commando_user: @devilbot:example.org
+commando_pass: 'hunter2'
+commando_room: '!L9TZLEoIhUtX7lNvYl:example.org'

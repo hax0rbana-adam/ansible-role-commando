@@ -1,0 +1,69 @@
+- name: "Ensuring group exists {{ commando_group }}"
+  ansible.builtin.group:
+    name: "{{ commando_group }}"
+    state: present
+
+- name: "Ensuring user exists {{ commando_user }}"
+  ansible.builtin.user:
+    name: "{{ commando_user }}"
+    group: "{{ commando_group }}"
+    state: present
+    password: "*"
+
+- name: Installing dependencies
+  ansible.builtin.package:
+    name:
+      - git
+      - python3-venv
+
+- name: Checking to see if we already have the code for commando
+  ansible.builtin.stat:
+    path: "{{ commando_directory }}/.git"
+  register: commando_repo
+
+- name: Checking out the code for commando
+  ansible.builtin.git:
+    # clone the repo if it doesn't exist, otherwise update the existing repo
+    clone: "{{ not commando_repo.stat.exists }}"
+    dest: "{{ commando_directory }}"
+    force: true
+    refspec: "{{ commando_git_refspec }}"
+    version: "{{ commando_git_commit }}"
+    repo: "{{ commando_repo }}"
+  become: true
+  become_user: '{{ commando_user }}'
+  notify: Restart commando
+
+- name: Installing python dependencies
+  ansible.builtin.pip:
+    virtualenv: "{{ commando_venv_home }}"
+    name:
+      - pypubsub
+      - wikipedia
+      - meshtastic
+      - matrix-nio[e2e]
+
+- name: "Ensure directory exists for configuration files"
+  ansible.builtin.file:
+    path: /etc/commando
+    state: directory
+    owner: "{{ commando_user }}"
+    group: "{{ commando_group }}"
+    mode: "0700"
+
+- name: Configuring commando's environment variables
+  ansible.builtin.template:
+    src: templates/commando.env
+    dest: "/etc/commando/commando.env"
+    mode: '600'
+  notify: Restart commando
+
+- name: Deploying commando service
+  ansible.builtin.template:
+    src: templates/commando.service.j2
+    dest: /etc/systemd/system/commando.service
+    mode: "644"
+  notify:
+    - Daemon-reload commando
+    - Enable commando
+    - Restart commando
