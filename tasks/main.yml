@@ -16,15 +16,23 @@
       - git
       - python3-venv
 
+- name: "Ensure directory exists for the git checkout"
+  ansible.builtin.file:
+    path: "{{ commando_directory }}"
+    state: directory
+    owner: "{{ commando_user }}"
+    group: "{{ commando_group }}"
+    mode: "0700"
+
 - name: Checking to see if we already have the code for commando
   ansible.builtin.stat:
     path: "{{ commando_directory }}/.git"
-  register: commando_repo
+  register: commando_repo_stat
 
 - name: Checking out the code for commando
   ansible.builtin.git:
     # clone the repo if it doesn't exist, otherwise update the existing repo
-    clone: "{{ not commando_repo.stat.exists }}"
+    clone: "{{ not commando_repo_stat.stat.exists }}"
     dest: "{{ commando_directory }}"
     force: true
     refspec: "{{ commando_git_refspec }}"
@@ -37,6 +45,7 @@
 - name: Installing python dependencies
   ansible.builtin.pip:
     virtualenv: "{{ commando_venv_home }}"
+    virtualenv_command: "{{ ansible_python_interpreter }} -m venv"
     name:
       - pypubsub
       - wikipedia
@@ -53,7 +62,7 @@
 
 - name: Configuring commando's environment variables
   ansible.builtin.template:
-    src: templates/commando.env
+    src: templates/commando.env.j2
     dest: "/etc/commando/commando.env"
     mode: '600'
   notify: Restart commando
