@@ -6,7 +6,7 @@
 - name: "Ensuring user exists {{ commando_user }}"
   ansible.builtin.user:
     name: "{{ commando_user }}"
-    group: "{{ commando_group }}"
+    groups: "{{ commando_group }},{{ commando_additional_group }}"
     state: present
     password: "*"
 
