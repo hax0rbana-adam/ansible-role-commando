@@ -5,6 +5,7 @@ Wants=network-online.target
 
 [Service]
 Type=notify
+WorkingDirectory={{ commando_directory }}
 ExecStart={{ commando_venv_home }}/bin/python {{ commando_directory }}/commando.py
 Restart=always
 RestartSec=30
