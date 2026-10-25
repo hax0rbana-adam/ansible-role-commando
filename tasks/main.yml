@@ -51,6 +51,8 @@
       - wikipedia
       - meshtastic
       - matrix-nio[e2e]
+  become: true
+  become_user: '{{ commando_user }}'
 
 - name: "Ensure directory exists for configuration files"
   ansible.builtin.file:
@@ -64,6 +66,8 @@
   ansible.builtin.template:
     src: templates/commando.env.j2
     dest: "/etc/commando/commando.env"
+    owner: "{{ commando_user }}"
+    group: "{{ commando_group }}"
     mode: '600'
   notify: Restart commando
 
